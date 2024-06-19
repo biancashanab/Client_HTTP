@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <netdb.h> // For gethostbyname
 
-SocketConnection::SocketConnection() : sock(-1) {
-    // Create socket
+SocketConnection::SocketConnection() : sock(-1) 
+{
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
         throw std::runtime_error("Socket creation failed");
@@ -18,7 +18,8 @@ SocketConnection::~SocketConnection() {
     close();
 }
 
-void SocketConnection::connect(const std::string& host, int port) {
+void SocketConnection::connect(const std::string& host, int port) 
+{
     struct sockaddr_in server_addr;
     struct hostent* server;
 
@@ -37,13 +38,15 @@ void SocketConnection::connect(const std::string& host, int port) {
     }
 }
 
-void SocketConnection::send(const std::string& data) {
+void SocketConnection::send(const std::string& data) 
+{
     if (::send(sock, data.c_str(), data.size(), 0) < 0) {
         throw std::runtime_error("Send failed");
     }
 }
 
-std::string SocketConnection::receive() {
+std::string SocketConnection::receive()
+{
     char buffer[4096];
     int bytes_received = ::recv(sock, buffer, sizeof(buffer), 0);
     if (bytes_received > 0) {
@@ -55,7 +58,8 @@ std::string SocketConnection::receive() {
     }
 }
 
-void SocketConnection::close() {
+void SocketConnection::close() 
+{
     if (sock != -1) {
         ::close(sock);
         sock = -1;
