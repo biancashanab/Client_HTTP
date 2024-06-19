@@ -1,7 +1,8 @@
 #include "SslConnection.h"
-#include<stdexcept>
+#include <stdexcept>
 
-SslConnection::SslConnection() : ssl(nullptr) {
+SslConnection::SslConnection() : ssl(nullptr) 
+{
     SSL_library_init();
     SSL_load_error_strings();
     OpenSSL_add_all_algorithms();
@@ -16,7 +17,8 @@ SslConnection::~SslConnection() {
     SSL_CTX_free(ctx);
 }
 
-void SslConnection::connect(const std::string& host, int port) {
+void SslConnection::connect(const std::string& host, int port) 
+{
     SocketConnection::connect(host, port); // Connect using TCP socket
 
     ssl = SSL_new(ctx);
@@ -37,7 +39,8 @@ void SslConnection::send(const std::string& data) {
     SSL_write(ssl, data.c_str(), data.size());
 }
 
-std::string SslConnection::receive() {
+std::string SslConnection::receive() 
+{
     char buffer[4096];
     int bytes_received = SSL_read(ssl, buffer, sizeof(buffer));
     if (bytes_received > 0) {
@@ -47,7 +50,8 @@ std::string SslConnection::receive() {
     }
 }
 
-void SslConnection::close() {
+void SslConnection::close() 
+{
     if (ssl) {
         SSL_shutdown(ssl);
         SSL_free(ssl);

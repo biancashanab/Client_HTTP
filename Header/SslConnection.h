@@ -11,10 +11,10 @@ public:
     SslConnection();
     virtual ~SslConnection();
 
-    void connect(const std::string& host, int port) ;
-    void send(const std::string& data) ;
-    std::string receive() ;
-    void close() ;
+    void connect(const std::string& host, int port);
+    void send(const std::string& data);
+    std::string receive();
+    void close();
 
 private:
     SSL_CTX* ctx;
