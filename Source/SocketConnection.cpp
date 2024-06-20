@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <stdexcept>
-#include <netdb.h> // For gethostbyname
+#include <netdb.h>
 
 SocketConnection::SocketConnection() : sock(-1) 
 {

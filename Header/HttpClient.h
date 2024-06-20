@@ -9,10 +9,45 @@
 class HttpClient : public HttpClientBase 
 {
 public:
+    HttpClient();
+    ~HttpClient() = default;
+
+    void set_timeout(double timeoutInSeconds);
+    CacheControl& get_cache_control();
+    CookieControl& get_cookie_control();
+
     std::string send_request(const std::string& method, const std::string& host, const std::string& path,
                              const std::map<std::string, std::string>& headers = {},
                              const std::string& body = "") override;
+    
+    std::string get(const std::string& host, const std::string& path,
+                    const std::map<std::string, std::string>& headers = {}) override;
+
+    std::string head(const std::string& host, const std::string& path,
+                     const std::map<std::string, std::string>& headers = {}) override;
+
+    std::string post(const std::string& host, const std::string& path,
+                     const std::map<std::string, std::string>& headers, const std::string& body) override;
+
+    std::string put(const std::string& host, const std::string& path,
+                    const std::map<std::string, std::string>& headers, const std::string& body) override;
+
+    std::string del(const std::string& host, const std::string& path,
+                    const std::map<std::string, std::string>& headers = {}) override;
+
+    std::string connect(const std::string& host, const std::string& path,
+                        const std::map<std::string, std::string>& headers = {}) override;
+
+    std::string options(const std::string& host, const std::string& path,
+                        const std::map<std::string, std::string>& headers, const std::string& body) override;
+
+    std::string trace(const std::string& host, const std::string& path,
+                      const std::map<std::string, std::string>& headers = {}) override;
+        
+private:
+    TimeoutManagement timeout;
+    CacheControl cache;
+    CookieControl cookie;
 };
 
 #endif // HTTPCLIENT_H
-

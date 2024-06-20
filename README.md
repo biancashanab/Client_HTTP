@@ -24,6 +24,20 @@
                            - metode pentru a gestiona conexiuni SSL, cum ar fi conectarea, trimiterea si primirea datelor
     -> TimeoutManagement   - gestioneaza timpul de asteptare pentru operatiuni
                            - permite setarea unui timp de asteptare si verificarea daca acesta a expirat
-
     -> CacheControl        - gestioneaza directivele de cache pentru HTTP
                            - permite adaugarea si recuperarea directivelor de cache
+
+ # 20.06.2024
+    
+    -> CookieControl       - gestioneaza cookie-urile pentru cererile HTTP
+
+    - adaug metodele de request HTTP si pot fi:
+
+      GET - Aceasta metoda este folosita pentru a prelua informatii de la un anumit server, pe baza unui URI
+      HEAD - Aceasta metoda seamana cu GET, dar transfera doar o linie de status si sectiunea de Header
+      POST - Metoda POST produce transmiterea de date către server. Spre exemplu, informațiile utilizatorului, încărcarea unui fișier, etc
+      PUT - Metoda PUT produce înlocuirea tuturor reprezentărilor resurselor cu un anumit conținut
+      DELETE - Sterge reprezentarile curente din resursele serverului, pe baza unui URI
+      CONNECT - Stabileste un tunel de conexiune cu serverul
+      OPTIONS - Descrie optiuni de comunicare cu resursele
+      TRACE - Folosit pentru testarea trabnsmiterii mesajelor, generand si calea catre resurse

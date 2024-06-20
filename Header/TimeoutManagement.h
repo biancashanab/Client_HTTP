@@ -4,7 +4,10 @@
 class TimeoutManagement 
 {
 public:
+    TimeoutManagement() = default;
     TimeoutManagement(double timeoutInSeconds);
+    ~TimeoutManagement() = default;
+
     void start();
     bool isTimeout();
 
