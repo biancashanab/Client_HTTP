@@ -26,7 +26,7 @@ void HttpResponse::parse(const std::string& raw_response)
         if (colon_pos != std::string::npos) 
         {
             std::string header_name = line.substr(0, colon_pos);
-            std::string header_value = line.substr(colon_pos + 2, line.length() - colon_pos - 3); // Remove "\r"
+            std::string header_value = line.substr(colon_pos + 2, line.length() - colon_pos - 3); // scot "\r"
             headers[header_name] = header_value;
         }
     }
@@ -66,5 +66,4 @@ std::string HttpResponse::get_header_value(const std::string& header_name) const
             return it->second;
         }
         return "";
-    }
-
+}

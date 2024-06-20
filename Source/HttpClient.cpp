@@ -32,7 +32,7 @@ std::string HttpClient::send_request(const std::string &method, const std::strin
         SocketConnection connection;
         connection.connect(host, 80);
 
-        if (cache.getUseCache()) {
+        if (cache.checkUseCache()) {
             std::string cachedResponse = cache.getFromCache(method, host, path);
             if (!cachedResponse.empty()) {
                 return cachedResponse;
@@ -53,7 +53,7 @@ std::string HttpClient::send_request(const std::string &method, const std::strin
             throw std::runtime_error("Timeout reached");
         }
 
-        if (cache.getUseCache()) {
+        if (cache.checkUseCache()) {
             cache.saveToCache(method, host, path, response_str);
         }
 /*

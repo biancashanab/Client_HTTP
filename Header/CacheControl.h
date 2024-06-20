@@ -11,7 +11,7 @@ public:
     void addDirective(const std::string& directive, const std::string& value);
     std::string getDirective(const std::string& directive) const;
     std::string getCacheDirective() const;
-    bool getUseCache() const;
+    bool checkUseCache() const;
     std::string getFromCache(const std::string& method, const std::string& host, const std::string& path) const;
     void saveToCache(const std::string& method, const std::string& host, const std::string& path, const std::string& response);
 

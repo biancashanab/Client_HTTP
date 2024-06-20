@@ -1,5 +1,6 @@
 #include "CacheControl.h"
 
+constexpr size_t MAX_CACHE_SIZE = 1000; 
 
 void CacheControl::setUseCache(bool use)
 {
@@ -29,7 +30,7 @@ std::string CacheControl::getCacheDirective() const
     }
 }
 
-bool CacheControl::getUseCache() const
+bool CacheControl::checkUseCache() const
 {
     return useCache;
 }
