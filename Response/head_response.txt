@@ -1,0 +1,19 @@
+HEAD response:
+Status: 200 OK
+Accept-Ranges: bytes
+Age: 576011
+Cache-Control: max-age=604800
+Connection: close
+Content-Length: 1256
+Content-Type: text/html; charset=UTF-8
+Date: Thu, 20 Jun 2024 10:42:59 GMT
+ETag: "3147526947"
+Expires: Thu, 27 Jun 2024 10:42:59 GMT
+Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT
+Server: ECAcc (bsb/2791)
+Vary: Accept-Encoding
+Via: 1.1 CampusAtm (squid)
+Warning: 113 squid "This cache hit is still fresh and more than 1 day old"
+X-Cache: HIT from CampusAtm
+X-Cache-Lookup: HIT from CampusAtm:3128
+
