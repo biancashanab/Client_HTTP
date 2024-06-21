@@ -1,11 +1,10 @@
 #pragma once
-#include <map>
 #include <string>
 
 class CacheControl {
 public:
-    CacheControl() : useCache(false), maxAgeInSeconds(3600) {}
-    ~CacheControl() = default;
+    CacheControl(const std::string& filename) : useCache(false), maxAgeInSeconds(3600), cacheFilename(filename) {}
+    ~CacheControl();
 
     void setUseCache(bool use);
     void addDirective(const std::string& directive, const std::string& value);
@@ -19,5 +18,6 @@ private:
     bool useCache;
     int maxAgeInSeconds;
     std::map<std::string, std::string> cacheDirectives;
-    std::map<std::string, std::string> cache;
+    std::string cacheFilename;
+    std::string generateKey(const std::string& method, const std::string& host, const std::string& path) const;
 };

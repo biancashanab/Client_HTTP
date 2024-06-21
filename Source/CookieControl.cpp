@@ -1,5 +1,6 @@
 #include "CookieControl.h"
 
+
 void CookieControl::addCookie(const std::string& name, const std::string& value) 
 {
     cookies[name] = value;

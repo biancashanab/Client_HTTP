@@ -66,3 +66,17 @@ void SocketConnection::close()
     }
 }
 
+void SocketConnection::setTimeout(int seconds) 
+{
+    struct timeval tv;
+    tv.tv_sec = seconds;
+    tv.tv_usec = 0;
+    
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) {
+        throw std::runtime_error("Set receive timeout failed");
+    }
+
+    if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const char*)&tv, sizeof(tv)) < 0) {
+        throw std::runtime_error("Set send timeout failed");
+    }
+}

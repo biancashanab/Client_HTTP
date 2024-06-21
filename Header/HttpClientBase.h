@@ -35,9 +35,6 @@ public:
     virtual std::string connect(const std::string& host, const std::string& path,
                         const std::map<std::string, std::string>& headers = {}) = 0;  
 
-    virtual std::string options(const std::string& host, const std::string& path,
-                        const std::map<std::string, std::string>& headers,  const std::string& body) = 0;
-
     virtual std::string trace(const std::string& host, const std::string& path,
                       const std::map<std::string, std::string>& headers = {}) = 0;
 

@@ -22,10 +22,9 @@
                            - utilizează o conexiune SSL (SslConnection) pentru a se conecta la servere HTTPS
     -> SslConnection       - mosteneste SocketConnection si adauga suport pentru conexiuni securizate SSL/TLS
                            - metode pentru a gestiona conexiuni SSL, cum ar fi conectarea, trimiterea si primirea datelor
-    -> TimeoutManagement   - gestioneaza timpul de asteptare pentru operatiuni
-                           - permite setarea unui timp de asteptare si verificarea daca acesta a expirat
     -> CacheControl        - gestioneaza directivele de cache pentru HTTP
                            - permite adaugarea si recuperarea directivelor de cache
+    - gestioneaza timpul de asteptare pentru operatiuni, setez un timp de asteptare si verific daca acesta a expirat
 
  # 20.06.2024
     
@@ -39,5 +38,9 @@
       PUT - Metoda PUT produce înlocuirea tuturor reprezentărilor resurselor cu un anumit conținut
       DELETE - Sterge reprezentarile curente din resursele serverului, pe baza unui URI
       CONNECT - Stabileste un tunel de conexiune cu serverul
-      OPTIONS - Descrie optiuni de comunicare cu resursele
       TRACE - Folosit pentru testarea trabnsmiterii mesajelor, generand si calea catre resurse
+
+ # 21.06.2024
+
+    - am adaugat o interfata grafica care iti permite sa introduci serverul caruia vrei sa ii trimiti un request, si afiseaza un raw response
+    - cache control - am adaugat si retinerea datelor intr-un fisier cu acelasi nume, pentru a le utiliza pe timpul executiei, la final fisierul este sters

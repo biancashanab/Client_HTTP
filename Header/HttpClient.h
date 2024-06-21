@@ -12,7 +12,6 @@ public:
     HttpClient();
     ~HttpClient() = default;
 
-    void set_timeout(double timeoutInSeconds);
     CacheControl& get_cache_control();
     CookieControl& get_cookie_control();
 
@@ -38,14 +37,10 @@ public:
     std::string connect(const std::string& host, const std::string& path,
                         const std::map<std::string, std::string>& headers = {}) override;
 
-    std::string options(const std::string& host, const std::string& path,
-                        const std::map<std::string, std::string>& headers, const std::string& body) override;
-
     std::string trace(const std::string& host, const std::string& path,
                       const std::map<std::string, std::string>& headers = {}) override;
         
 private:
-    TimeoutManagement timeout;
     CacheControl cache;
     CookieControl cookie;
 };

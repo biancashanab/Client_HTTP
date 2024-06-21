@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra
+CXXFLAGS = -std=c++17 -Wall -Wextra 
 LDFLAGS = -lssl -lcrypto
 
 SRC_DIR = Source
@@ -10,6 +10,9 @@ INCLUDE_DIR = Header
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 TARGET = $(BIN_DIR)/http_client
+
+PYTHON = python3
+PYTHON_SCRIPT = API.py
 
 all: $(TARGET)
 
@@ -22,7 +25,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR) $(INCLUDE_DIR)
 $(OBJ_DIR) $(BIN_DIR) $(INCLUDE_DIR):
 	mkdir -p $@
 
+run:
+	$(PYTHON) $(PYTHON_SCRIPT)
+
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
 
-.PHONY: all clean
+.PHONY: all run clean
