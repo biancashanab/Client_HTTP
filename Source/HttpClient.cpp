@@ -1,11 +1,7 @@
 #include "HttpClient.h"
 #include <iostream>
 
-HttpClient::HttpClient()
-{
-    cache = CacheControl();
-    cookie = CookieControl();
-}
+HttpClient::HttpClient() : cache("Cache"), cookie() {}
 
 CacheControl &HttpClient::get_cache_control()
 {
@@ -23,12 +19,6 @@ std::string HttpClient::send_request(const std::string &method, const std::strin
     const int timeout_duration = 10;
 
     try {
-        if (cache.checkUseCache()) {
-            std::string cachedResponse = cache.getFromCache(method, host, path);
-            if (!cachedResponse.empty()) {
-                return cachedResponse;
-            }
-        }
 
         SocketConnection connection;
         connection.setTimeout(timeout_duration);
@@ -39,10 +29,6 @@ std::string HttpClient::send_request(const std::string &method, const std::strin
 
         std::string response_str = connection.receive();
         HttpResponse response(response_str);
-
-        if (cache.checkUseCache()) {
-            cache.saveToCache(method, host, path, response_str);
-        }
 
         std::map<std::string, std::string> responseHeaders = response.get_headers();
         auto it = responseHeaders.find("Set-Cookie");
@@ -70,7 +56,14 @@ std::string HttpClient::send_request(const std::string &method, const std::strin
 
 std::string HttpClient::get(const std::string& host, const std::string& path,
                             const std::map<std::string, std::string>& headers) {
-    return send_request("GET", host, path, headers);
+
+    if (cache.isUsingCache() && cache.checkCacheExists(host)) {
+        return cache.loadCache(host);
+    }
+
+    std::string response = send_request("GET", host, path, headers);
+    cache.saveCache(host, response);
+    return response;
 }
 
 std::string HttpClient::head(const std::string& host, const std::string& path,
