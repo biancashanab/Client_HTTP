@@ -15,6 +15,7 @@ public:
     CacheControl& get_cache_control();
     CookieControl& get_cookie_control();
 
+    void set_authentication(const std::string& username, const std::string& password);
     std::string send_request(const std::string& method, const std::string& host, const std::string& path,
                              const std::map<std::string, std::string>& headers = {},
                              const std::string& body = "") override;
@@ -43,6 +44,7 @@ public:
 private:
     CacheControl cache;
     CookieControl cookie;
+    std::string auth_header;
 };
 
 #endif // HTTPCLIENT_H

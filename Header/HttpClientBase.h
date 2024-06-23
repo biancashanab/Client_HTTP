@@ -3,7 +3,6 @@
 
 #include <string>
 #include <map>
-#include "TimeoutManagement.h"
 #include "CacheControl.h"
 #include "CookieControl.h"
 
