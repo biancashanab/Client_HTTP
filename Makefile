@@ -30,5 +30,5 @@ run:
 
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
-
+	rm Cache/*
 .PHONY: all run clean

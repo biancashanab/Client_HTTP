@@ -1,0 +1,10 @@
+index.html
+styles/main.css
+scripts/app.js
+assets/images/logo.png
+documents/user_guide.pdf
+api/data.json
+styles.css
+style.css
+script.js
+scripts.js
