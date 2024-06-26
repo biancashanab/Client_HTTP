@@ -62,7 +62,7 @@ std::vector<std::string> readFiles(const std::string &filename)
 
 bool request_http(std::string request_type, std::string host, bool use_cache, std::string subdomain, std::string body)
 {
-    HttpsClient client;
+    HttpClient client;
     if (use_cache)
     {
         client.get_cache_control().setUseCache(true);
