@@ -12,14 +12,8 @@ class HttpClientApp:
         self.root.attributes("-fullscreen", True) 
 
         self.style = ttk.Style()
-        self.style.configure("TFrame", background="#fad9e9")
-        self.style.configure("TLabel", background="#fad9e9", foreground="black")
         self.style.configure("TButton", background="#d9fad9", foreground="black")
         self.style.configure("TEntry", fieldbackground="white", foreground="black")
-        self.style.configure("TCheckbutton", background="#fad9e9", foreground="black")
-        self.style.configure("TLabelframe", background="#fad9e9", foreground="black")
-        self.style.configure("TLabelframe.Label", background="#fad9e9", foreground="black")
-        self.style.configure("TNotebook", background="#fad9e9")
         self.style.configure("TNotebook.Tab", background="#d9fad9", foreground="black")
 
         self.root.bind("<Escape>", lambda event: self.exit_fullscreen()) 
@@ -41,7 +35,7 @@ class HttpClientApp:
 
         ttk.Label(http_methods_frame, text="Select Request Method:").pack(side=tk.LEFT, padx=10)
 
-        self.request_type_var = tk.StringVar()
+        self.request_type_var = tk.StringVar(value="GET")
         methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "TRACE", "CONNECT"]
         for method in methods:
             ttk.Button(http_methods_frame, text=method, command=lambda m=method: self.set_request_type(m)).pack(side=tk.LEFT, padx=5)
@@ -60,6 +54,10 @@ class HttpClientApp:
         ttk.Label(control_panel_frame, text="Host:").grid(row=0, column=0, pady=5, sticky="ew")
         self.host_entry = ttk.Entry(control_panel_frame, width=40)
         self.host_entry.grid(row=1, column=0, pady=5, sticky="ew")
+
+        ttk.Label(control_panel_frame, text="Protocol:").grid(row=9, column=0, pady=5, sticky="ew")
+        self.protocol_var = tk.StringVar(value="http")
+        ttk.Combobox(control_panel_frame, textvariable=self.protocol_var, values=["http", "https"]).grid(row=10, column=0, pady=5, sticky="ew")
 
         ttk.Label(control_panel_frame, text="File (/example.php | wordlist):").grid(row=2, column=0, pady=5, sticky="ew")
         self.subdomain_entry = ttk.Entry(control_panel_frame, width=40)
@@ -92,6 +90,7 @@ class HttpClientApp:
 
     def set_request_type(self, method):
         self.request_type_var.set(method)
+
         if method == "POST":
             self.post_options_frame.grid()
         else:
@@ -99,6 +98,8 @@ class HttpClientApp:
 
 
     def send_request(self):
+        self.response_text.delete('1.0', tk.END)
+
         if self.number_of_requests_entry.get() == "" or not self.number_of_requests_entry.get().isdigit():
             number_of_requests = 1
         else:
@@ -110,18 +111,20 @@ class HttpClientApp:
 
         if number_of_requests > 1:
             for _ in range(number_of_requests):
-                self.send_single_request()
+                self.send_single_request(_)
             self.response_text.insert(tk.END, "\nRequests have been sent!\n\n")
 
         else:
-            self.send_single_request()
+            self.send_single_request(1)
 
 
-    def send_single_request(self):
+    def send_single_request(self, iteration):
+        protocol = self.protocol_var.get()
         host = self.host_entry.get().strip()
         request_type = self.request_type_var.get()
         use_cache = self.cache_var.get()
         subdomain = self.subdomain_entry.get().strip()
+        
         if subdomain == "":
             subdomain = "wordlist"
 
@@ -145,17 +148,56 @@ class HttpClientApp:
 
         try:
             result = subprocess.run(
-                ["./bin/http_client", request_type, host, str(use_cache), subdomain, request_body],
+                ["./bin/http_client", protocol, request_type, host, str(use_cache), subdomain, request_body],
                 capture_output=True,
-                text=True
+                text=True,
+                timeout=30
             )
 
             print(result.stdout)
-            self.response_text.insert(tk.END, f"Request Type: {request_type}\n")
-            self.response_text.insert(tk.END, f"Response:\n{result.stdout}\n\n")
+            if iteration == 1:
+                self.response_text.insert(tk.END, f"Request Type: {request_type}\n")
+                self.response_text.insert(tk.END, f"Response:\n{result.stdout}\n\n")
 
+            if request_type == "GET":
+                self.root.after(2000, lambda: self.ask_to_open_local_web_page(host))
+        
+        except subprocess.TimeoutExpired:
+            messagebox.showerror("Error", "The request timed out.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to send request: {str(e)}")
+
+
+    def ask_to_open_local_web_page(self, subdomain):
+        if self.cache_var.get() == 1:
+            result = messagebox.askyesno("Open Web Page", "Do you want to open the downloaded web page?")
+            if result:
+                self.open_local_web_page(subdomain)
+
+
+    def open_local_web_page(self, subdomain):
+        local_file_path = os.path.join(self.cleanup_folder_path, subdomain + ".html")
+        print(f"Checking if file exists: {local_file_path}")
+        if os.path.exists(local_file_path):
+            print(f"Opening file: {local_file_path}")
+            webbrowser.open(f"file://{local_file_path}")
+        else:
+            print("File not found")
+            messagebox.showerror("Error", "Local web page not found.")
+
+
+    def cleanup_folder(self):
+        folder_path = self.cleanup_folder_path
+        if os.path.exists(folder_path) and os.path.isdir(folder_path):
+            for filename in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)
+                except Exception as e:
+                    print(f"Failed to delete {file_path}. Reason: {e}")
 
 
     def on_closing(self):
@@ -168,7 +210,7 @@ class HttpClientApp:
 
     def exit_fullscreen(self):
         self.root.attributes("-fullscreen", False) 
-        self.root.geometry("1000x800+450+100")
+        self.root.geometry("1300x820+330+80")
 
 
 

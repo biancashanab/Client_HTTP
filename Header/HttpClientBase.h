@@ -12,6 +12,8 @@ public:
     HttpClientBase() = default; 
     virtual ~HttpClientBase() = default;
     
+    virtual CacheControl& get_cache_control() = 0;
+    virtual CookieControl& get_cookie_control() = 0;
     virtual std::string send_request(const std::string& method, const std::string& host, const std::string& path,
                                      const std::map<std::string, std::string>& headers = {},
                                      const std::string& body = "") = 0;

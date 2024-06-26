@@ -43,4 +43,12 @@
  # 21.06.2024
 
     - am adaugat o interfata grafica care iti permite sa introduci serverul caruia vrei sa ii trimiti un request, si afiseaza un raw response
-    - cache control - am adaugat si retinerea datelor intr-un fisier cu acelasi nume, pentru a le utiliza pe timpul executiei, la final fisierul este sters
+    - cache control - am adaugat si retinerea datelor intr-un folder cu acelasi nume, pentru a le utiliza pe timpul executiei, la final folderul este sters
+
+ # 25.06.2024
+
+    - pentru cache control la request-ul de GET, fisierele sunt sterse si reactualizate la un interval de timp
+    - pentru request-ul de POST, am adaugat posibilitatea de autentificare cu username si parola, iar daca parola nu este conoscuta, se incearca o serie de parole din fisierul passwords.txt
+
+ # 26.06.2024
+    - am adaugat posibilitatea de a alegete protocolul din interfata, http sau https

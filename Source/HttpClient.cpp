@@ -12,15 +12,11 @@ CookieControl &HttpClient::get_cookie_control()
 {
     return cookie;
 }
-std::string HttpClient::send_request(const std::string &method, const std::string &host, const std::string &path,
-                                     const std::map<std::string, std::string> &headers, const std::string &body)
+std::string HttpClient::send_request(const std::string &method, const std::string &host, const std::string &path, const std::map<std::string, std::string> &headers, const std::string &body)
 {
-    const int timeout_duration = 10;
-
     try
     {
         SocketConnection connection;
-        connection.setTimeout(timeout_duration);
         connection.connect(host, 80);
 
         HttpRequest request(method, host, path, headers, body);
@@ -28,6 +24,7 @@ std::string HttpClient::send_request(const std::string &method, const std::strin
 
         std::string response_str = connection.receive();
         HttpResponse response(response_str);
+        
         std::map<std::string, std::string> responseHeaders = response.get_headers();
         auto it = responseHeaders.find("Set-Cookie");
         if (it != responseHeaders.end())
@@ -56,7 +53,6 @@ std::string HttpClient::send_request(const std::string &method, const std::strin
 
 std::string HttpClient::get(const std::string &host, const std::string &path, const std::map<std::string, std::string> &headers)
 {
-
     if (cache.isUsingCache() && cache.checkCacheExists(host))
     {
         return cache.loadCache(host);

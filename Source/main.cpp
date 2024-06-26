@@ -8,7 +8,6 @@
 #include <filesystem>
 #include <sstream>
 
-#include "HttpClient.h"
 #include "HttpsClient.h"
 #include "CacheControl.h"
 #include "CookieControl.h"
@@ -61,21 +60,11 @@ std::vector<std::string> readFiles(const std::string &filename)
     return files;
 }
 
-int main(int argc, char *argv[])
+bool request_http(std::string request_type, std::string host, bool use_cache, std::string subdomain, std::string body)
 {
-    if (argc < 4)
+    HttpsClient client;
+    if (use_cache)
     {
-        std::cerr << "Usage: " << argv[0] << " <request_type> <host> <use_cache>\n";
-        return 1;
-    }
-
-    std::string request_type = argv[1];
-    std::string host = argv[2];
-    bool use_cache = std::stoi(argv[3]);
-
-    HttpClient client;
-
-    if (use_cache) {
         client.get_cache_control().setUseCache(true);
     }
 
@@ -86,38 +75,28 @@ int main(int argc, char *argv[])
         {"User-Agent", "HttpClient/1.0"},
         {"Cache-Control", client.get_cache_control().isUsingCache() ? "max-age=3600" : "no-cache"},
         {"Cookie", client.get_cookie_control().getCookieHeader()}};
-
-  //  std::transform(request_type.begin(), request_type.end(), request_type.begin(),
-   //                [](unsigned char c) { return std::toupper(c); });
-
     if (request_type == "GET")
-    { 
+    {
         std::vector<std::string> files = readFiles("files.txt");
         for (const std::string &file : files)
         {
             std::string filename = "Cache/" + file;
             std::ofstream outfile(filename);
-            std::string url = "http://" + host + "/" + file;
+            std::string url = "https://" + host + "/" + file;
             response = client.get(host, url, headers);
             if (strstr(response.c_str(), "404") == NULL && strstr(response.c_str(), "Not Found") == NULL)
             {
                 outfile << response;
-                std::cout << response << std::endl;
+                if (file == "index.html")
+                    std::cout << response << std::endl;
             }
             outfile.close();
         }
     }
     else if (request_type == "POST")
     {
-        std::string host = argv[2];
-        std::string path = argv[3];
-        std::map<std::string, std::string> headers = {
-            {"User-Agent", "HttpClient/1.0"},
-            {"Content-Type", "application/x-www-form-urlencoded"},
-            {"Cache-Control", "no-cache"}};
-        std::string body = argv[5];
-
-        if (std::string(argv[4]) == "wordlist")
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        if (subdomain == "wordlist")
         {
             std::ifstream infile("subdomains.txt");
             if (!infile)
@@ -188,10 +167,10 @@ int main(int argc, char *argv[])
                     {
                         modified_body.replace(pos, std::string("password=wordlist").length(), "password=" + password);
                     }
-                    std::string response = client.post(host, argv[4], headers, modified_body);
+                    std::string response = client.post(host, subdomain, headers, modified_body);
                     if (response.find("successful") != std::string::npos)
                     {
-                        std::cout << "Response from " << host << " with the subdomain: " << argv[4] << " and password: " << password << ":\n"
+                        std::cout << "Response from " << host << " with the subdomain: " << subdomain << " and password: " << password << ":\n"
                                   << response << std::endl;
                         return 0;
                     }
@@ -199,33 +178,222 @@ int main(int argc, char *argv[])
             }
             else
             {
-                std::string response = client.post(host, argv[4], headers, body);
+                std::string response = client.post(host, subdomain, headers, body);
                 if (response.find("successful") != std::string::npos)
                 {
-                    std::cout << "Response from " << host << " with the subdomain: " << argv[4] << ":\n"
+                    std::cout << "Response from " << host << " with the subdomain: " << subdomain << ":\n"
                               << response << std::endl;
                     return 0;
                 }
             }
         }
     }
-    else if (request_type == "HEAD") {
+    else if (request_type == "HEAD")
+    {
         response = client.head(host, "/", headers);
     }
-    else if (request_type == "PUT") {
+    else if (request_type == "PUT")
+    {
         response = client.put(host, "/", headers, "<p>New File</p>");
     }
-    else if (request_type == "DELETE") {
+    else if (request_type == "DELETE")
+    {
         response = client.del(host, "/", headers);
     }
-    else if (request_type == "CONNECT") {
+    else if (request_type == "CONNECT")
+    {
         response = client.connect(host, "/", headers);
     }
-    else if (request_type == "TRACE") {
+    else if (request_type == "TRACE")
+    {
         response = client.trace(host, "/", headers);
     }
-    else {
+    else
+    {
         std::cerr << "Unsupported request type: " << request_type << std::endl;
+        return 1;
+    }
+    std::cout << response << std::endl;
+    return 0;
+}
+
+bool request_https(std::string request_type, std::string host, bool use_cache, std::string subdomain, std::string body)
+{
+    HttpsClient client;
+    if (use_cache)
+    {
+        client.get_cache_control().setUseCache(true);
+    }
+
+    client.addCookie("sessionid", "abc123");
+
+    std::string response;
+    std::map<std::string, std::string> headers = {
+        {"User-Agent", "HttpClient/1.0"},
+        {"Cache-Control", client.get_cache_control().isUsingCache() ? "max-age=3600" : "no-cache"},
+        {"Cookie", client.get_cookie_control().getCookieHeader()}};
+    if (request_type == "GET")
+    {
+        std::vector<std::string> files = readFiles("files.txt");
+        for (const std::string &file : files)
+        {
+            std::string filename = "Cache/" + file;
+            std::ofstream outfile(filename);
+            std::string url = "http://" + host + "/" + file;
+            response = client.get(host, url, headers);
+            if (strstr(response.c_str(), "404") == NULL && strstr(response.c_str(), "Not Found") == NULL)
+            {
+                outfile << response;
+                if (file == "index.html")
+                    std::cout << response << std::endl;
+            }
+            outfile.close();
+        }
+    }
+    else if (request_type == "POST")
+    {
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        if (subdomain == "wordlist")
+        {
+            std::ifstream infile("subdomains.txt");
+            if (!infile)
+            {
+                std::cerr << "Failed to open subdomains.txt" << std::endl;
+                return 1;
+            }
+
+            std::string subdomain;
+            while (std::getline(infile, subdomain))
+            {
+                if (body.find("wordlist") != std::string::npos)
+                {
+                    std::ifstream infile2("passwords.txt");
+                    if (!infile2)
+                    {
+                        std::cerr << "Failed to open passwords.txt" << std::endl;
+                        return 1;
+                    }
+                    std::string password;
+                    while (std::getline(infile2, password))
+                    {
+                        std::string modified_body = body;
+                        std::size_t pos = modified_body.find("password=wordlist");
+                        if (pos != std::string::npos)
+                        {
+                            modified_body.replace(pos, std::string("password=wordlist").length(), "password=" + password);
+                        }
+                        subdomain = "/" + subdomain;
+                        std::string response = client.post(host, subdomain, headers, modified_body);
+                        if (response.find("successful") != std::string::npos)
+                        {
+                            std::cout << "Response from " << host << " with the subdomain: " << subdomain << " and password: " << password << ":\n"
+                                      << response << std::endl;
+                            return 0;
+                        }
+                    }
+                }
+                else
+                {
+                    subdomain = "/" + subdomain;
+                    std::string response = client.post(host, subdomain, headers, body);
+                    if (response.find("successful") != std::string::npos)
+                    {
+                        std::cout << "Response from " << host << " with the subdomain: " << subdomain << ":\n"
+                                  << response << std::endl;
+                        return 0;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (body.find("wordlist") != std::string::npos)
+            {
+                std::ifstream infile2("passwords.txt");
+                if (!infile2)
+                {
+                    std::cerr << "Failed to open passwords.txt" << std::endl;
+                    return 1;
+                }
+                std::string password;
+                while (std::getline(infile2, password))
+                {
+                    std::string modified_body = body;
+                    std::size_t pos = modified_body.find("password=wordlist");
+                    if (pos != std::string::npos)
+                    {
+                        modified_body.replace(pos, std::string("password=wordlist").length(), "password=" + password);
+                    }
+                    std::string response = client.post(host, subdomain, headers, modified_body);
+                    if (response.find("successful") != std::string::npos)
+                    {
+                        std::cout << "Response from " << host << " with the subdomain: " << subdomain << " and password: " << password << ":\n"
+                                  << response << std::endl;
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                std::string response = client.post(host, subdomain, headers, body);
+                if (response.find("successful") != std::string::npos)
+                {
+                    std::cout << "Response from " << host << " with the subdomain: " << subdomain << ":\n"
+                              << response << std::endl;
+                    return 0;
+                }
+            }
+        }
+    }
+    else if (request_type == "HEAD")
+    {
+        response = client.head(host, "/", headers);
+    }
+    else if (request_type == "PUT")
+    {
+        response = client.put(host, "/", headers, "<p>New File</p>");
+    }
+    else if (request_type == "DELETE")
+    {
+        response = client.del(host, "/", headers);
+    }
+    else if (request_type == "CONNECT")
+    {
+        response = client.connect(host, "/", headers);
+    }
+    else if (request_type == "TRACE")
+    {
+        response = client.trace(host, "/", headers);
+    }
+    else
+    {
+        std::cerr << "Unsupported request type: " << request_type << std::endl;
+        return 1;
+    }
+    std::cout << response << std::endl;
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc < 6)
+    {
+        std::cerr << "Usage: " << argv[0] << " <request_type> <host> <use_cache>\n";
+        return 1;
+    }
+    std::string protocol = argv[1];
+
+    if (protocol == "http")
+    {
+        request_http(argv[2], argv[3], std::stoi(argv[4]), argv[5], argv[6]);
+    }
+    else if (protocol == "https")
+    {
+        request_https(argv[2], argv[3], std::stoi(argv[4]), argv[5], argv[6]);
+    }
+    else
+    {
+        std::cerr << "Unsupported protocol: " << protocol << std::endl;
         return 1;
     }
 
