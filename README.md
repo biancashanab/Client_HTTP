@@ -51,4 +51,4 @@
     - pentru request-ul de POST, am adaugat posibilitatea de autentificare cu username si parola, iar daca parola nu este conoscuta, se incearca o serie de parole din fisierul passwords.txt
 
  # 26.06.2024
-    - am adaugat posibilitatea de a alegete protocolul din interfata, http sau https
+    - am adaugat posibilitatea de a alege protocolul din interfata, http sau https
