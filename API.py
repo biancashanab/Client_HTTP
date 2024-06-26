@@ -55,16 +55,16 @@ class HttpClientApp:
         self.host_entry = ttk.Entry(control_panel_frame, width=40)
         self.host_entry.grid(row=1, column=0, pady=5, sticky="ew")
 
-        ttk.Label(control_panel_frame, text="Protocol:").grid(row=9, column=0, pady=5, sticky="ew")
+        ttk.Label(control_panel_frame, text="Protocol:").grid(row=2, column=0, pady=5, sticky="ew")
         self.protocol_var = tk.StringVar(value="http")
-        ttk.Combobox(control_panel_frame, textvariable=self.protocol_var, values=["http", "https"]).grid(row=10, column=0, pady=5, sticky="ew")
+        ttk.Combobox(control_panel_frame, textvariable=self.protocol_var, values=["http", "https"]).grid(row=3, column=0, pady=5, sticky="ew")
 
-        ttk.Label(control_panel_frame, text="File (/example.php | wordlist):").grid(row=2, column=0, pady=5, sticky="ew")
+        ttk.Label(control_panel_frame, text="File (/example.php | wordlist):").grid(row=4, column=0, pady=5, sticky="ew")
         self.subdomain_entry = ttk.Entry(control_panel_frame, width=40)
-        self.subdomain_entry.grid(row=3, column=0, pady=5, sticky="ew")
+        self.subdomain_entry.grid(row=5, column=0, pady=5, sticky="ew")
 
         self.post_options_frame = ttk.LabelFrame(control_panel_frame, text="POST Options")
-        self.post_options_frame.grid(row=4, column=0, pady=5, sticky="ew")
+        self.post_options_frame.grid(row=6, column=0, pady=5, sticky="ew")
         self.post_options_frame.grid_remove()
 
         ttk.Label(self.post_options_frame, text="Username (if needed):").pack(pady=5)
@@ -75,14 +75,14 @@ class HttpClientApp:
         self.password_entry = ttk.Entry(self.post_options_frame, width=30, show="*")
         self.password_entry.pack()
 
-        ttk.Label(control_panel_frame, text="Number of Requests:").grid(row=5, column=0, pady=5, sticky="ew")
+        ttk.Label(control_panel_frame, text="Number of Requests:").grid(row=7, column=0, pady=5, sticky="ew")
         self.number_of_requests_entry = ttk.Entry(control_panel_frame, width=40)
-        self.number_of_requests_entry.grid(row=6, column=0, pady=5, sticky="ew")
+        self.number_of_requests_entry.grid(row=8, column=0, pady=5, sticky="ew")
 
         self.cache_var = tk.IntVar()
-        ttk.Checkbutton(control_panel_frame, text="Use Cache", variable=self.cache_var).grid(row=7, column=0, pady=5, sticky="ew")
+        ttk.Checkbutton(control_panel_frame, text="Use Cache", variable=self.cache_var).grid(row=9, column=0, pady=5, sticky="ew")
 
-        ttk.Button(control_panel_frame, text="Send Request", command=self.send_request).grid(row=8, column=0, pady=20, sticky="ew")
+        ttk.Button(control_panel_frame, text="Send Request", command=self.send_request).grid(row=10, column=0, pady=20, sticky="ew")
 
         self.cleanup_folder_path = os.path.join(os.getcwd(), "Cache")
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -218,3 +218,6 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = HttpClientApp(root)
     root.mainloop()
+
+
+

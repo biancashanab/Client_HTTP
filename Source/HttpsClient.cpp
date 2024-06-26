@@ -10,7 +10,7 @@ std::string HttpsClient::send_request(const std::string &method, const std::stri
 {
     try
     {
-        SocketConnection connection;
+        SslConnection connection;
         connection.connect(host, 443);
 
         HttpRequest request(method, host, path, headers, body);
@@ -25,6 +25,7 @@ std::string HttpsClient::send_request(const std::string &method, const std::stri
         {
             addCookie(it->second, host);
         }
+        
         if (method == "HEAD")
         {
             std::ostringstream header_info;

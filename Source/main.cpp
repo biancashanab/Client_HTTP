@@ -82,7 +82,7 @@ bool request_http(std::string request_type, std::string host, bool use_cache, st
         {
             std::string filename = "Cache/" + file;
             std::ofstream outfile(filename);
-            std::string url = "https://" + host + "/" + file;
+            std::string url = "http://" + host + "/" + file;
             response = client.get(host, url, headers);
             if (strstr(response.c_str(), "404") == NULL && strstr(response.c_str(), "Not Found") == NULL)
             {
@@ -232,6 +232,7 @@ bool request_https(std::string request_type, std::string host, bool use_cache, s
         {"User-Agent", "HttpClient/1.0"},
         {"Cache-Control", client.get_cache_control().isUsingCache() ? "max-age=3600" : "no-cache"},
         {"Cookie", client.get_cookie_control().getCookieHeader()}};
+
     if (request_type == "GET")
     {
         std::vector<std::string> files = readFiles("files.txt");
@@ -239,7 +240,7 @@ bool request_https(std::string request_type, std::string host, bool use_cache, s
         {
             std::string filename = "Cache/" + file;
             std::ofstream outfile(filename);
-            std::string url = "http://" + host + "/" + file;
+            std::string url = "https://" + host + "/" + file;
             response = client.get(host, url, headers);
             if (strstr(response.c_str(), "404") == NULL && strstr(response.c_str(), "Not Found") == NULL)
             {
@@ -373,6 +374,8 @@ bool request_https(std::string request_type, std::string host, bool use_cache, s
     std::cout << response << std::endl;
     return 0;
 }
+
+
 
 int main(int argc, char *argv[])
 {
