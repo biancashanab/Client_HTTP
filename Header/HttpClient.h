@@ -40,7 +40,7 @@ public:
     std::string trace(const std::string &host, const std::string &path,
                       const std::map<std::string, std::string> &headers = {}) override;
 
-private:
+protected:
     CacheControl cache;
     CookieControl cookie;
 };

@@ -119,7 +119,7 @@ class HttpClientApp:
 
 
     def send_single_request(self, iteration):
-        protocol = self.protocol_var.get()
+        protocol = self.protocol_var.get().strip()
         host = self.host_entry.get().strip()
         request_type = self.request_type_var.get()
         use_cache = self.cache_var.get()

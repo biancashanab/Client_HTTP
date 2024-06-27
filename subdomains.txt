@@ -1,3 +1,4 @@
+login.jsp
 auth.php
 login.php
 authenticate.php

@@ -14,32 +14,6 @@
 
 namespace fs = std::filesystem;
 
-void printFilesContentInDirectory()
-{
-    std::ifstream file("files.txt", std::ios::in);
-    if (!file)
-    {
-        std::cerr << "Failed to open files.txt" << std::endl;
-        return;
-    }
-    std::string filename;
-    while (file >> filename)
-    {
-        std::string my_path = "Cache/" + filename;
-        std::ifstream file2(my_path, std::ios::in);
-        if (file2)
-        {
-            std::string buffer;
-            while (std::getline(file2, buffer))
-            {
-                std::cout << buffer << std::endl;
-            }
-            file2.close();
-        }
-    }
-    file.close();
-}
-
 std::vector<std::string> readFiles(const std::string &filename)
 {
     std::vector<std::string> files;
@@ -54,7 +28,6 @@ std::vector<std::string> readFiles(const std::string &filename)
     while (std::getline(infile, file))
     {
         files.push_back(file);
-        std::cout << file;
     }
 
     return files;
@@ -229,9 +202,10 @@ bool request_https(std::string request_type, std::string host, bool use_cache, s
 
     std::string response;
     std::map<std::string, std::string> headers = {
-        {"User-Agent", "HttpClient/1.0"},
+        {"User-Agent", "HttpsClient/1.0"},
         {"Cache-Control", client.get_cache_control().isUsingCache() ? "max-age=3600" : "no-cache"},
         {"Cookie", client.get_cookie_control().getCookieHeader()}};
+       // {"Accept", "application/json"}};
 
     if (request_type == "GET")
     {
@@ -250,10 +224,11 @@ bool request_https(std::string request_type, std::string host, bool use_cache, s
             }
             outfile.close();
         }
+        return 0;
     }
     else if (request_type == "POST")
     {
-        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        headers["Content-Type"] = "application/x-www-form-urlencoded"; //le codific sub forma de perechi
         if (subdomain == "wordlist")
         {
             std::ifstream infile("subdomains.txt");
@@ -371,7 +346,6 @@ bool request_https(std::string request_type, std::string host, bool use_cache, s
         std::cerr << "Unsupported request type: " << request_type << std::endl;
         return 1;
     }
-    std::cout << response << std::endl;
     return 0;
 }
 

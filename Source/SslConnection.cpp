@@ -1,5 +1,6 @@
 #include "SslConnection.h"
 #include <stdexcept>
+#include <iostream>
 
 SslConnection::SslConnection() : ssl(nullptr) 
 {
@@ -41,10 +42,21 @@ void SslConnection::send(const std::string& data) {
 
 std::string SslConnection::receive() 
 {
+    /*
     char buffer[4096];
     int bytes_received = SSL_read(ssl, buffer, sizeof(buffer));
     if (bytes_received > 0) {
         return std::string(buffer, bytes_received);
+    } else {
+        throw std::runtime_error("SSL read failed");
+    }*/
+
+    char buffer[4096];
+    int bytes_received = SSL_read(ssl, buffer, sizeof(buffer));
+    if (bytes_received > 0) {
+        std::string response(buffer, bytes_received);
+       std::cout << "Received: " << response << std::endl; // Apentru debug
+        return response;
     } else {
         throw std::runtime_error("SSL read failed");
     }

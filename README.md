@@ -38,7 +38,7 @@
       PUT - Metoda PUT produce înlocuirea tuturor reprezentărilor resurselor cu un anumit conținut
       DELETE - Sterge reprezentarile curente din resursele serverului, pe baza unui URI
       CONNECT - Stabileste un tunel de conexiune cu serverul
-      TRACE - Folosit pentru testarea trabnsmiterii mesajelor, generand si calea catre resurse
+      TRACE - Folosit pentru testarea transmiterii mesajelor, generand si calea catre resurse
 
  # 21.06.2024
 
