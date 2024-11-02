@@ -1,54 +1,58 @@
-# Client_HTTP
+## Proiect: HTTP Client
 
- # 17.06.2024
+Acest proiect implementează un client HTTP modular și extensibil, destinat gestionării cererilor și răspunsurilor HTTP/HTTPS. Utilizează conexiuni socket, suportă SSL și include funcționalități de cache, gestionarea cookie-urilor, timeout și autentificare pentru cereri POST, totul accesibil printr-o interfata in python.
 
-    - am ales tema proiectului
+### Structura Proiectului
 
- # 18.06.2024
+- **HttpClientBase** - Interfață de bază pentru clasa de client HTTP.
 
-    -> HttpClientBase      - interfata
-    -> HttpClient          - mosteneste clasa HttpClientBase si implementeaza metoda send_request 
-                           - send_request este suprascrisa pentru a utiliza o conexiune de tip socket (SocketConnection) pentru a trimite si a primi cereri HTTP
-    -> SocketConnection    - gestioneaza conexiunile de retea de tip socket
-                           - metode pentru a stabili conexiunea, a trimite si a primi date pe socket
-    -> HttpRequest         - reprezinta o cerere HTTP
-                           - metode pentru a formata corect o cerere HTTP (metoda, host, headere, corp)
-    -> HttpResponse        - reprezinta un raspuns HTTP primit de la server
-                           - metode pentru a analiza raspunsul si a extrage corpul si headerele
-                        
- # 19.06.2024
+- **HttpClient** - Moștenește `HttpClientBase` și implementează metoda `send_request`.
+  - `send_request` utilizează o conexiune de tip socket (`SocketConnection`) pentru a trimite și primi cereri HTTP.
 
-    -> HttpsClient         - mosteneste clasa HttpClient si implementeaza, de asemenea, metoda send_request pentru secure
-                           - utilizează o conexiune SSL (SslConnection) pentru a se conecta la servere HTTPS
-    -> SslConnection       - mosteneste SocketConnection si adauga suport pentru conexiuni securizate SSL/TLS
-                           - metode pentru a gestiona conexiuni SSL, cum ar fi conectarea, trimiterea si primirea datelor
-    -> CacheControl        - gestioneaza directivele de cache pentru HTTP
-                           - permite adaugarea si recuperarea directivelor de cache
-    - gestioneaza timpul de asteptare pentru operatiuni, setez un timp de asteptare si verific daca acesta a expirat
+- **SocketConnection** - Gestionează conexiunile de rețea de tip socket.
+  - Metode pentru a stabili conexiunea, a trimite și a primi date.
 
- # 20.06.2024
-    
-    -> CookieControl       - gestioneaza cookie-urile pentru cererile HTTP
+- **HttpRequest** - Reprezintă o cerere HTTP.
+  - Metode pentru a formata corect cererea HTTP (metodă, host, headere, corp).
 
-    - adaug metodele de request HTTP si pot fi:
+- **HttpResponse** - Reprezintă un răspuns HTTP.
+  - Metode pentru a analiza răspunsul și a extrage corpul și headerele.
 
-      GET - Aceasta metoda este folosita pentru a prelua informatii de la un anumit server, pe baza unui URI
-      HEAD - Aceasta metoda seamana cu GET, dar transfera doar o linie de status si sectiunea de Header
-      POST - Metoda POST produce transmiterea de date către server. Spre exemplu, informațiile utilizatorului, încărcarea unui fișier, etc
-      PUT - Metoda PUT produce înlocuirea tuturor reprezentărilor resurselor cu un anumit conținut
-      DELETE - Sterge reprezentarile curente din resursele serverului, pe baza unui URI
-      CONNECT - Stabileste un tunel de conexiune cu serverul
-      TRACE - Folosit pentru testarea transmiterii mesajelor, generand si calea catre resurse
+- **HttpsClient** - Moștenește `HttpClient` și implementează `send_request` pentru conexiuni securizate.
+  - Utilizează o conexiune SSL (`SslConnection`) pentru servere HTTPS.
 
- # 21.06.2024
+- **SslConnection** - Moștenește `SocketConnection` și adaugă suport SSL/TLS.
+  - Metode pentru a gestiona conexiuni SSL, inclusiv trimiterea și primirea datelor.
 
-    - am adaugat o interfata grafica care iti permite sa introduci serverul caruia vrei sa ii trimiti un request, si afiseaza un raw response
-    - cache control - am adaugat si retinerea datelor intr-un folder cu acelasi nume, pentru a le utiliza pe timpul executiei, la final folderul este sters
+- **CacheControl** - Gestionează directivele de cache pentru HTTP.
+  - Permite adăugarea și recuperarea datelor de cache, setând și verificând timpul de așteptare pentru operațiuni.
 
- # 25.06.2024
+- **CookieControl** - Gestionează cookie-urile pentru cererile HTTP.
 
-    - pentru cache control la request-ul de GET, fisierele sunt sterse si reactualizate la un interval de timp
-    - pentru request-ul de POST, am adaugat posibilitatea de autentificare cu username si parola, iar daca parola nu este conoscuta, se incearca o serie de parole din fisierul passwords.txt
+### Funcționalități ale Metodelor HTTP
 
- # 26.06.2024
-    - am adaugat posibilitatea de a alege protocolul din interfata, http sau https
+Proiectul include metode HTTP standard:
+- `GET` - Preia informații de la server.
+- `HEAD` - Similară cu `GET`, dar transferă doar statusul și headerele.
+- `POST` - Transmite date către server (ex. încărcare fișier, autentificare).
+- `PUT` - Înlocuiește reprezentările resurselor.
+- `DELETE` - Șterge resursele curente.
+- `CONNECT` - Creează un tunel de conexiune.
+- `TRACE` - Testează transmiterea mesajelor.
+
+### Actualizări de Funcționalitate
+
+#### 20.06.2024
+- **CookieControl** pentru gestionarea cookie-urilor.
+- Metode HTTP suplimentare.
+
+#### 21.06.2024
+- **Interfață grafică**: Permite introducerea serverului și afișează răspunsul.
+- **Cache Control**: Stochează datele într-un folder, șters la finalul sesiunii.
+
+#### 25.06.2024
+- **Cache GET**: Fișierele de cache sunt șterse și actualizate periodic.
+- **Autentificare POST**: Suport pentru autentificare; parolele sunt citite din `passwords.txt`.
+
+#### 26.06.2024
+- Interfața permite selectarea protocolului HTTP sau HTTPS.
